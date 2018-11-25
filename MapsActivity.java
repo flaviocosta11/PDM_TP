@@ -96,7 +96,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         final String[] editText = new String[1];
 
-
         alertDialogBuilder
                 .setCancelable(false)
                 .setPositiveButton("OK",
@@ -118,8 +117,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
-        // show it
-
 
         return editText[0];
 
