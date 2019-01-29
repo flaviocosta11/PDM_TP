@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     ft.addToBackStack(null);
                     ft.commit();
                 } else if (position == 4) {
-                    mFragment = new Navigation();
+                    mFragment = new ListRoutes();
                     // startActivity(new Intent(MainActivity.this, FragmentMap.class));
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     ft.replace(R.id.fragment_container, mFragment);

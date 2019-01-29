@@ -42,7 +42,8 @@ import java.util.List;
 
 import pt.ipp.estg.pdm_tp.Tables.PointInterest;
 import pt.ipp.estg.pdm_tp.Tables.Route;
-import pt.ipp.estg.pdm_tp.Utils.directionhelpers.TaskLoadedCallback;
+import pt.ipp.estg.pdm_tp.directionhelpers.FetchURL;
+import pt.ipp.estg.pdm_tp.directionhelpers.TaskLoadedCallback;
 
 import static android.support.constraint.Constraints.TAG;
 
@@ -89,7 +90,7 @@ public class Navigation extends Fragment implements OnMapReadyCallback, View.OnC
         list = preencherlistadepontos();
         mListRoutes = getRoutes();
 
-        new pt.ipp.estg.mapsroutestest.directionhelpers.FetchURL(context).execute(getUrl());
+        new FetchURL(context).execute(getUrl());
 
 
 

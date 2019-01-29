@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
@@ -36,12 +37,14 @@ import java.util.List;
 import pt.ipp.estg.pdm_tp.Tables.PointInterest;
 import pt.ipp.estg.pdm_tp.Tables.Route;
 import pt.ipp.estg.pdm_tp.Utils.ConvertUtils;
+import pt.ipp.estg.pdm_tp.directionhelpers.FetchURL;
+import pt.ipp.estg.pdm_tp.directionhelpers.TaskLoadedCallback;
 
 
 import static java.lang.String.valueOf;
 
 
-public class DetailRoute extends Fragment implements OnMapReadyCallback, View.OnClickListener  {
+public class DetailRoute extends Fragment implements OnMapReadyCallback, View.OnClickListener, TaskLoadedCallback {
 
     private int idRoute;
     private MyDb dbHelper;
@@ -52,7 +55,7 @@ public class DetailRoute extends Fragment implements OnMapReadyCallback, View.On
     LinearLayout linearLayout;
     TextView Titulo;
     TextView Descricao;
-
+    private Polyline currentPolyline;
     GoogleMap mGoogleMap;
     MapView mapView;
     ArrayList markerPoints= new ArrayList();
@@ -259,8 +262,44 @@ public class DetailRoute extends Fragment implements OnMapReadyCallback, View.On
             listaLocalizacoes.add(new LatLng(Double.parseDouble(pontos.get(i).getLatitude()),  Double.parseDouble(pontos.get(i).getLongitude())));
         }
 
-        drawRoutes(listaLocalizacoes);
+        new FetchURL(context).execute(getUrl(listaLocalizacoes, "driving"), "driving");
+        //drawRoutes(listaLocalizacoes);
         return listaLocalizacoes;
+    }
+
+    private String getUrl(List<LatLng> locations, String directionMode) {
+
+        String str_origin = null;
+        String str_dest = null;
+
+        int i =0;
+        StringBuilder waypoints =  new StringBuilder("&waypoints=");
+        for ( LatLng latLng : locations ){
+            if(i==0){
+                str_origin = "origin=" + latLng.latitude + "," + latLng.longitude;
+            }else if(i == locations.size() -1){
+                str_dest = "destination=" + latLng.latitude + "," + latLng.longitude;
+            }else{
+                waypoints.append("via:" + latLng.latitude + "," + latLng.longitude);
+                Log.d("waypoints",waypoints.toString());
+                //String str_medium = "&waypoints=via:" + med.latitude + "," + med.longitude;
+            }
+            i++;
+        }
+
+        String mode = "mode=" + directionMode;
+        String output = "json";
+        String parameters = str_origin + "&" + str_dest + waypoints +  "&" + mode;
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
+
+        return url;
+    }
+
+    @Override
+    public void onTaskDone(Object... values) {
+        if (currentPolyline != null)
+            currentPolyline.remove();
+        currentPolyline = mGoogleMap.addPolyline((PolylineOptions) values[0]);
     }
 
 
