@@ -1,15 +1,19 @@
 package pt.ipp.estg.pdm_tp;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-
+import pt.ipp.estg.pdm_tp.directionhelpers.FetchURL;
+import pt.ipp.estg.pdm_tp.directionhelpers.TaskLoadedCallback;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 
 public class MainActivity extends AppCompatActivity {
 
+    BottomNavigationBar bottomNavigationBar;
     private Fragment mFragment;
     public static int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
@@ -18,19 +22,38 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         initBottomnavigation();
         mFragment = new FragmentMap();
 
-        FragmentTransaction fr = getSupportFragmentManager().beginTransaction();
-        fr.replace(R.id.fragment_container, mFragment);
-        fr.addToBackStack(null);
-        fr.commit();
+
+
+        Intent intent = getIntent();
+        if(intent.getStringExtra("id") != null){
+            bottomNavigationBar.selectTab(4);
+
+            Bundle args = new Bundle();
+            args.putInt("id", Integer.parseInt(intent.getStringExtra("id")));
+            Fragment newFragment = new DetailRoute();
+            newFragment.setArguments(args);//passar id para o fragment
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, newFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }else{
+            FragmentTransaction fr = getSupportFragmentManager().beginTransaction();
+            fr.replace(R.id.fragment_container, mFragment);
+            fr.addToBackStack(null);
+            fr.commit();
+        }
+
+
 
     }
 
     public void initBottomnavigation() {
 
-        BottomNavigationBar bottomNavigationBar = findViewById(R.id.bottom_navigation_bar);
+        bottomNavigationBar = findViewById(R.id.bottom_navigation_bar);
         bottomNavigationBar
                 .addItem(new BottomNavigationItem(R.drawable.baseline_home_black_18dp, "Home"))
                 .addItem(new BottomNavigationItem(R.drawable.baseline_add_location_black_18dp, "Adicionar Local"))

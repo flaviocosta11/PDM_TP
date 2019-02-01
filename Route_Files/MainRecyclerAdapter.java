@@ -2,6 +2,7 @@ package pt.ipp.estg.pdm_tp.Route_Files;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,6 +21,7 @@ import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 import java.util.ArrayList;
 
 import pt.ipp.estg.pdm_tp.DetailPlace;
+import pt.ipp.estg.pdm_tp.DetailRout;
 import pt.ipp.estg.pdm_tp.DetailRoute;
 import pt.ipp.estg.pdm_tp.MyDb;
 import pt.ipp.estg.pdm_tp.R;
@@ -73,7 +75,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 Toast.makeText(mContext, "Posição: #" + holder.getAdapterPosition(), Toast.LENGTH_SHORT).show();
                 Toast.makeText(mContext, "ID: " + mListRoutes.get(position).getId(), Toast.LENGTH_SHORT).show();
 
-                Bundle args = new Bundle();
+                /*Bundle args = new Bundle();
                 args.putInt("id", mListRoutes.get(position).getId());
                 Fragment newFragment = new DetailRoute();
                 newFragment.setArguments(args);//passar id para o fragment
@@ -82,7 +84,11 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 transaction.replace(R.id.fragment_container, newFragment);
                 transaction.addToBackStack(null);
 
-                transaction.commit();
+                transaction.commit();*/
+
+                Intent i=new Intent(mContext, DetailRout.class);
+                i.putExtra("id", mListRoutes.get(position).getId()+"");
+                mContext.startActivity(i);
             }
         });
 
